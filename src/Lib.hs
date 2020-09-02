@@ -28,7 +28,8 @@ import           Data.Text             (Text(..))
 -- shown as if the server was B. Similar behaviour can be seen in the following
 -- lines as well.
 --
--- This program outputs set scores with A score first.
+-- This program outputs set scores with A score first. It still does respect game 
+-- server order and outputs game scores accordingly.
 
 -- business data types
 data Score = Score
@@ -139,7 +140,6 @@ showGame g = case g of
   Game (Points x y) s -> case s of
     ServerA -> showPointsScore x <> "-" <> showPointsScore y
     ServerB -> showPointsScore y <> "-" <> showPointsScore x
-  _                   -> error $ "Bad game: " <> show g
 
 showPointsScore :: Int -> Text
 showPointsScore x = case x of
