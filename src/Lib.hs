@@ -136,7 +136,9 @@ showGame g = case g of
   Game Deuce _        -> "40-40"
   Game AdvantageA _   -> "A-40"
   Game AdvantageB _   -> "40-A"
-  Game (Points x y) _ -> showPointsScore x <> "-" <> showPointsScore y
+  Game (Points x y) s -> case s of
+    ServerA -> showPointsScore x <> "-" <> showPointsScore y
+    ServerB -> showPointsScore y <> "-" <> showPointsScore x
   _                   -> error $ "Bad game: " <> show g
 
 showPointsScore :: Int -> Text
