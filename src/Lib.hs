@@ -18,6 +18,19 @@ import           Data.Text             (Text(..))
 
 -- Business logic --------------------------------------------------------------
 
+-- NOTE: set score order is ambiguous in the problem description, and is 
+-- not defined in the cited Wikipedia article 
+-- (https://en.wikipedia.org/wiki/Tennis_scoring_system).
+-- 
+-- Also, the score order is unclear from the provided output sample. For 
+-- example, in line 14 of the input and output respectively, the server is A, and 
+-- she wins the first and only game in the current set, but the output score is 
+-- shown as if the server was B. Similar behaviour can be seen in the following
+-- lines as well.
+--
+-- This program outputs set scores with A score first.
+
+-- business data types
 data Score = Score
   { sets        :: [SetScore]
   , currentSet  :: SetScore
@@ -33,11 +46,14 @@ data GameScore = Points Int Int | Deuce | AdvantageA | AdvantageB
 data Server = ServerA | ServerB
   deriving (Show)
 
-type SetScore = (Int, Int) 
+data SetScore = SetScore 
+  { aWins :: Int -- number of games in set won by A
+  , bWins :: Int -- number of games in set won by B
+  }
 
-
+-- initial values
 newSet :: SetScore
-newSet = (0, 0)
+newSet = SetScore 0 0
 
 newGame :: Game
 newGame = Game (Points 0 0) ServerA
@@ -58,6 +74,7 @@ processMatch pointsText =
 
     go :: Score -> Char -> Score
     go (Score sets curSet g) point =
+      -- game scoring logic
       case (g, point) of
         (Game Deuce s, 'A')                           -> continueCurGame (Game AdvantageA s)
         (Game Deuce s, 'B')                           -> continueCurGame (Game AdvantageB s)
@@ -75,23 +92,25 @@ processMatch pointsText =
         _ -> error $ "Unknown game condition: " <> show (g, point)
 
       where
-        aWinsGame = gameWonBy incFst (\(x, y) -> x >= 6 && x - y >= 2)
-        bWinsGame = gameWonBy incSnd (\(x, y) -> y >= 6 && y - x >= 2)
+        aWinsGame = gameWonBy incSetsWonByA (\(SetScore a b) -> a >= 6 && a - b >= 2)
+        bWinsGame = gameWonBy incSetsWonByB (\(SetScore a b) -> b >= 6 && b - a >= 2)
             
         gameWonBy inc setWon server = 
           let curSet'  = inc curSet 
-              newGame' = reverseGameServer newGame server
+              newGame' = reverseGameServer newGame server -- keeping track of game servers
               continueCurSetScore = Score sets curSet' newGame'
               setWonScore = Score (sets <> [curSet']) newSet newGame'
 
+          -- set scoring logic, when a game is won by either player check if
+          -- a set is won as well, or if the current set continues
           in if setWon curSet' 
               then setWonScore
               else continueCurSetScore
 
         continueCurGame curGame = Score sets curSet curGame
 
-        incFst (x, y) = (x + 1, y)
-        incSnd (x, y) = (x, y + 1)
+        incSetsWonByA (SetScore a b) = SetScore (a + 1) b
+        incSetsWonByB (SetScore a b) = SetScore a (b + 1)
 
         reverseGameServer (Game score _) server = case server of
           ServerA -> Game score ServerB
@@ -109,7 +128,7 @@ showSets :: [SetScore] -> Text
 showSets xs = T.intercalate " " (fmap showSet xs)
 
 showSet :: SetScore -> Text
-showSet (x, y) = T.pack (show x) <> "-" <> T.pack (show y)
+showSet (SetScore x y) = T.pack (show x) <> "-" <> T.pack (show y)
 
 showGame :: Game -> Text
 showGame g = case g of
