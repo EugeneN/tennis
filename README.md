@@ -1,5 +1,11 @@
 # tennis
 
+## Prerequisite:
+
+- Install Stack:
+
+  `curl -sSL https://get.haskellstack.org/ | sh`
+
 ## Run:
 
 - `git clone https://github.com/EugeneN/tennis.git`
