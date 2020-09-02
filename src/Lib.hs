@@ -19,19 +19,6 @@ import           Data.Text             (Text(..))
 
 -- Business logic --------------------------------------------------------------
 
--- NOTE: set score order is ambiguous in the problem description, and is 
--- not defined in the cited Wikipedia article 
--- (https://en.wikipedia.org/wiki/Tennis_scoring_system).
--- 
--- Also, the score order is unclear from the provided output sample. For 
--- example, in line 14 of the input and output respectively, the server is A, and 
--- she wins the first and only game in the current set, but the output score is 
--- shown as if the server was B. Similar behaviour can be seen in the following
--- lines as well.
---
--- This program outputs set scores with A score first. It still does respect game 
--- server order and outputs game scores accordingly.
-
 -- business data types
 data Score = Score
   { sets        :: [SetScore]

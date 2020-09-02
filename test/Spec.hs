@@ -7,8 +7,8 @@ import           Lib                   (readInput, processInput, formatOutput)
 
 main :: IO ()
 main = hspec $ do
-    describe "Match predefined output" $ do
-        it "matches line by line" $ do
+    describe "Must match predefined output" $ do
+        it "matches line by line (stripped from whitespaces)" $ do
             let inFn     = "data/input.txt"
                 sampleFn = "data/output.txt"
 
