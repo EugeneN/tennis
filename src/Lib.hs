@@ -87,14 +87,12 @@ processMatch pointsText =
         gameWonBy inc setWon server = 
           let curSet'  = inc curSet 
               newGame' = reverseGameServer newGame server -- keeping track of game servers
-              continueCurSetScore = Score sets curSet' newGame'
-              setWonScore = Score (sets <> [curSet']) newSet newGame'
 
           -- set scoring logic. when a game is won by either player check if
           -- a set is won as well, or if the current set continues
           in if setWon curSet' 
-              then setWonScore
-              else continueCurSetScore
+              then Score (sets <> [curSet']) newSet  newGame'
+              else Score sets                curSet' newGame'
 
         continueCurGame curGame = Score sets curSet curGame
 
