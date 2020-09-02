@@ -75,7 +75,7 @@ processMatch pointsText =
 
     go :: Score -> Char -> Score
     go (Score sets curSet g) point =
-      -- game scoring logic
+      -- game scoring logic, tennis rules distilled into a declarative form
       case (g, point) of
         (Game Deuce s, 'A')                           -> continueCurGame (Game AdvantageA s)
         (Game Deuce s, 'B')                           -> continueCurGame (Game AdvantageB s)
@@ -102,7 +102,7 @@ processMatch pointsText =
               continueCurSetScore = Score sets curSet' newGame'
               setWonScore = Score (sets <> [curSet']) newSet newGame'
 
-          -- set scoring logic, when a game is won by either player check if
+          -- set scoring logic. when a game is won by either player check if
           -- a set is won as well, or if the current set continues
           in if setWon curSet' 
               then setWonScore
