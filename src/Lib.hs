@@ -48,8 +48,8 @@ data Server = ServerA | ServerB
   deriving (Show)
 
 data SetScore = SetScore 
-  { aWins :: Int -- number of games in set won by A
-  , bWins :: Int -- number of games in set won by B
+  { aWins :: Int -- number of games in a set won by A
+  , bWins :: Int -- number of games in a set won by B
   }
 
 -- initial values
