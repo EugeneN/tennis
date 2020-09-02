@@ -6,6 +6,7 @@ module Lib
     , readInput
     , processInput
     , writeOutput
+    , formatOutput
     ) where
 
 import           System.Environment    (getArgs)    
@@ -172,10 +173,13 @@ parseArgs = do
 readInput :: FilePath -> IO Text
 readInput fn = TIO.readFile fn
 
+formatOutput :: [Score] -> [Text]
+formatOutput xs = fmap showScore xs
+
 writeOutput :: FilePath -> [Score] -> IO ()
 writeOutput fn xs = case fn of
   "-" -> putStrLn . T.unpack $ data_
   _   -> TIO.writeFile fn data_
   where
-    data_ = T.unlines $ fmap showScore xs
+    data_ = T.unlines $ formatOutput xs
 

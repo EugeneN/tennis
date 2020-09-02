@@ -23,6 +23,8 @@ dependencies:
 - base >= 4.7 && < 5
 - filepath
 - text
+- hspec
+- QuickCheck
 
 library:
   source-dirs: src
