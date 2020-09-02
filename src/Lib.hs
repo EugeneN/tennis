@@ -80,12 +80,9 @@ processMatch pointsText =
             
         gameWonBy inc setWon server = 
           let curSet'  = inc curSet 
-              curSet'' = case server of
-                            ServerA -> curSet'
-                            ServerB -> reverseSetScore curSet'
               newGame' = reverseGameServer newGame server
-              continueCurSetScore = Score sets curSet'' newGame'
-              setWonScore = Score (sets <> [curSet'']) newSet newGame'
+              continueCurSetScore = Score sets curSet' newGame'
+              setWonScore = Score (sets <> [curSet']) newSet newGame'
 
           in if setWon curSet' 
               then setWonScore
@@ -95,8 +92,6 @@ processMatch pointsText =
 
         incFst (x, y) = (x + 1, y)
         incSnd (x, y) = (x, y + 1)
-
-        reverseSetScore = id -- (y, x)
 
         reverseGameServer (Game score _) server = case server of
           ServerA -> Game score ServerB
