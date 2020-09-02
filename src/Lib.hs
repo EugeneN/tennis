@@ -122,15 +122,17 @@ processMatch pointsText =
 -- Utilities -------------------------------------------------------------------
 
 showScore :: Score -> Text
-showScore (Score ss cs cg) = case ss of
-  [] -> T.intercalate " " [showSet cs, showGame cg]
-  xs -> T.intercalate " " [showSets xs, showSet cs, showGame cg]
+showScore (Score ss cs cg@(Game _ server)) = case ss of
+  [] -> T.intercalate " " [showSet server cs, showGame cg]
+  xs -> T.intercalate " " [showSets server xs, showSet server cs, showGame cg]
 
-showSets :: [SetScore] -> Text
-showSets xs = T.intercalate " " (fmap showSet xs)
+showSets :: Server -> [SetScore] -> Text
+showSets server xs = T.intercalate " " (fmap (showSet server) xs)
 
-showSet :: SetScore -> Text
-showSet (SetScore x y) = T.pack (show x) <> "-" <> T.pack (show y)
+showSet :: Server -> SetScore -> Text
+showSet server (SetScore x y) = case server of
+  ServerA -> T.pack (show x) <> "-" <> T.pack (show y)
+  ServerB -> T.pack (show y) <> "-" <> T.pack (show x)
 
 showGame :: Game -> Text
 showGame g = case g of
