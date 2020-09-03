@@ -55,14 +55,12 @@ processInput :: Text -> [Score]
 processInput xs = fmap (processMatch . T.strip) (T.lines xs)
 
 processMatch :: Text -> Score
-processMatch pointsText =
-  foldl' go initialScore points
-
+processMatch pointsText = foldl' scoreMatch initialScore points
   where
     points = T.unpack pointsText
 
-    go :: Score -> Char -> Score
-    go (Score sets curSet g) point =
+    scoreMatch :: Score -> Char -> Score
+    scoreMatch (Score sets curSet g) point =
       -- game scoring logic, tennis rules distilled into a declarative form
       case (g, point) of
         (Game Deuce s, 'A')                           -> continueCurGame (Game AdvantageA s)
