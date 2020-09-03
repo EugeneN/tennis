@@ -81,10 +81,10 @@ processMatch pointsText =
         _ -> error $ "Unknown game condition: " <> show (g, point)
 
       where
-        aWinsGame = gameWonBy incSetsWonByA setWonByA
-        bWinsGame = gameWonBy incSetsWonByB setWonByB
+        aWinsGame = gameWon incSetsWonByA setWonByA
+        bWinsGame = gameWon incSetsWonByB setWonByB
             
-        gameWonBy inc setWon server = 
+        gameWon inc setWon server = 
           let curSet'  = inc curSet 
               newGame' = reverseGameServer newGame server -- keeping track of game servers
 
