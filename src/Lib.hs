@@ -81,8 +81,8 @@ processMatch pointsText =
         _ -> error $ "Unknown game condition: " <> show (g, point)
 
       where
-        aWinsGame = gameWonBy incSetsWonByA (\(SetScore a b) -> a >= 6 && a - b >= 2)
-        bWinsGame = gameWonBy incSetsWonByB (\(SetScore a b) -> b >= 6 && b - a >= 2)
+        aWinsGame = gameWonBy incSetsWonByA setWonByA
+        bWinsGame = gameWonBy incSetsWonByB setWonByB
             
         gameWonBy inc setWon server = 
           let curSet'  = inc curSet 
@@ -98,6 +98,9 @@ processMatch pointsText =
 
         incSetsWonByA (SetScore a b) = SetScore (a + 1) b
         incSetsWonByB (SetScore a b) = SetScore a (b + 1)
+
+        setWonByA (SetScore a b) = a >= 6 && a - b >= 2
+        setWonByB (SetScore a b) = b >= 6 && b - a >= 2
 
         reverseGameServer (Game score _) server = case server of
           ServerA -> Game score ServerB
