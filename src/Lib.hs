@@ -95,8 +95,10 @@ processMatch pointsText = foldl' scoreMatch initialScore points
         incSetsScoreWonByA (SetScore a b) = SetScore (a + 1) b
         incSetsScoreWonByB (SetScore a b) = SetScore a (b + 1)
 
-        isSetWonByA (SetScore a b) = a >= 6 && a - b >= 2
-        isSetWonByB (SetScore a b) = b >= 6 && b - a >= 2
+        isSetWonByA (SetScore a b) = isSetWonByX a b
+        isSetWonByB (SetScore a b) = isSetWonByX b a
+
+        isSetWonByX x y = x >= 6 && x - y >= 2
 
         reverseGameServer (Game score _) server = case server of
           ServerA -> Game score ServerB
