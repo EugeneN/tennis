@@ -81,26 +81,24 @@ processMatch pointsText =
         _ -> error $ "Unknown game condition: " <> show (g, point)
 
       where
-        aWinsGame = gameWon incSetsWonByA setWonByA
-        bWinsGame = gameWon incSetsWonByB setWonByB
+        aWinsGame = gameWon incSetsScoreWonByA isSetWonByA
+        bWinsGame = gameWon incSetsScoreWonByB isSetWonByB
             
-        gameWon inc setWon server = 
-          let curSet'  = inc curSet 
-              newGame' = reverseGameServer newGame server -- keeping track of game servers
+        gameWon incSetScore isSetWon server = 
+          let curSet'  = incSetScore curSet 
+              newGame' = reverseGameServer newGame server     -- keeping track of game servers
 
-          -- set scoring logic. when a game is won by either player check if
-          -- a set is won as well, or if the current set continues
-          in if setWon curSet' 
-              then Score (sets <> [curSet']) newSet  newGame'
-              else Score sets                curSet' newGame'
+          in if isSetWon curSet' 
+              then Score (sets <> [curSet']) newSet  newGame' -- the current set is won
+              else Score sets                curSet' newGame' -- the current set continues
 
         continueCurGame curGame = Score sets curSet curGame
 
-        incSetsWonByA (SetScore a b) = SetScore (a + 1) b
-        incSetsWonByB (SetScore a b) = SetScore a (b + 1)
+        incSetsScoreWonByA (SetScore a b) = SetScore (a + 1) b
+        incSetsScoreWonByB (SetScore a b) = SetScore a (b + 1)
 
-        setWonByA (SetScore a b) = a >= 6 && a - b >= 2
-        setWonByB (SetScore a b) = b >= 6 && b - a >= 2
+        isSetWonByA (SetScore a b) = a >= 6 && a - b >= 2
+        isSetWonByB (SetScore a b) = b >= 6 && b - a >= 2
 
         reverseGameServer (Game score _) server = case server of
           ServerA -> Game score ServerB
