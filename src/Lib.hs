@@ -81,6 +81,8 @@ processMatch pointsText =
         _ -> error $ "Unknown game condition: " <> show (g, point)
 
       where
+        continueCurGame curGame = Score sets curSet curGame
+
         aWinsGame = gameWon incSetsScoreWonByA isSetWonByA
         bWinsGame = gameWon incSetsScoreWonByB isSetWonByB
             
@@ -91,8 +93,6 @@ processMatch pointsText =
           in if isSetWon curSet' 
               then Score (sets <> [curSet']) newSet  newGame' -- the current set is won
               else Score sets                curSet' newGame' -- the current set continues
-
-        continueCurGame curGame = Score sets curSet curGame
 
         incSetsScoreWonByA (SetScore a b) = SetScore (a + 1) b
         incSetsScoreWonByB (SetScore a b) = SetScore a (b + 1)
