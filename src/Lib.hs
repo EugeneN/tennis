@@ -63,22 +63,25 @@ processMatch pointsText = foldl' scoreMatch initialScore points
     scoreMatch (Score sets curSet g) point =
       -- game scoring logic, tennis rules distilled into a declarative form
       case (g, point) of
-        (Game Deuce s, 'A')                           -> continueCurGame (Game AdvantageA s)
-        (Game Deuce s, 'B')                           -> continueCurGame (Game AdvantageB s)
-        (Game AdvantageA s, 'A')                      -> aWinsGame s
-        (Game AdvantageA s, 'B')                      -> continueCurGame (Game Deuce s)
-        (Game AdvantageB s, 'B')                      -> bWinsGame s
-        (Game AdvantageB s, 'A')                      -> continueCurGame (Game Deuce s)
-        (Game (Points a b) s, 'A') | a == 3 && b == 0 -> aWinsGame s
-        (Game (Points a b) s, 'B') | b == 3 && a == 0 -> bWinsGame s
-        (Game (Points a b) s, 'A') | a == 2 && b == 3 -> continueCurGame (Game Deuce s)
-        (Game (Points a b) s, 'B') | a == 3 && b == 2 -> continueCurGame (Game Deuce s)
-        (Game (Points a b) s, 'A')                    -> continueCurGame (Game (Points (a+1) b) s)
-        (Game (Points a b) s, 'B')                    -> continueCurGame (Game (Points a (b+1)) s)
+        (Game Deuce s, 'A')                                       -> continueCurGame (Game AdvantageA s)
+        (Game Deuce s, 'B')                                       -> continueCurGame (Game AdvantageB s)
+        (Game AdvantageA s, 'A')                                  -> aWinsGame s
+        (Game AdvantageA s, 'B')                                  -> continueCurGame (Game Deuce s)
+        (Game AdvantageB s, 'B')                                  -> bWinsGame s
+        (Game AdvantageB s, 'A')                                  -> continueCurGame (Game Deuce s)
+        (Game (Points a b) s, 'A') | hasForty a && hasLove b      -> aWinsGame s
+        (Game (Points a b) s, 'B') | hasForty b && hasLove a      -> bWinsGame s
+        (Game (Points a b) s, 'A') | hasForty (a+1) && hasForty b -> continueCurGame (Game Deuce s)
+        (Game (Points a b) s, 'B') | hasForty a && hasForty (b+1) -> continueCurGame (Game Deuce s)
+        (Game (Points a b) s, 'A')                                -> continueCurGame (Game (Points (a+1) b) s)
+        (Game (Points a b) s, 'B')                                -> continueCurGame (Game (Points a (b+1)) s)
 
         _ -> error $ "Unknown game condition: " <> show (g, point)
 
       where
+        hasForty x = x >= 3
+        hasLove x = x == 0
+
         continueCurGame curGame = Score sets curSet curGame
 
         aWinsGame = gameWon incSetsScoreWonByA isSetWonByA
